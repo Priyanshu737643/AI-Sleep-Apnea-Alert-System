@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Sleep Apnea Alert System</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: #f0f4f8;
+      }
+      #chatbox {
+        width: 60%;
+        margin: 20px auto;
+        border: 1px solid #ccc;
+        padding: 15px;
+        background: white;
+        height: 400px;
+        overflow-y: auto;
+      }
+      .message {
+        margin: 10px;
+        padding: 10px;
+        border-radius: 5px;
+      }
+      .user {
+        background: #cce5ff;
+        text-align: right;
+      }
+      .bot {
+        background: #e6f3ff;
+        text-align: left;
+      }
+      #input-container {
+        width: 60%;
+        margin: 0 auto;
+      }
+      input {
+        width: 70%;
+        padding: 10px;
+      }
+      button {
+        padding: 10px 20px;
+        background: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>AI Sleep Apnea Alert System</h1>
+    <div id="chatbox">
+      <div class="bot">
+        Hello! I'm here to help you monitor sleep apnea risks. How can I assist
+        you today?
+      </div>
+    </div>
+    <div id="input-container">
+      <input type="text" id="userInput" placeholder="Type your message..." />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <div class="bot">
+      <h3>Developed By:</h3>
+      <p>Priyanshu Sinha</p>
+      <p>Shubham</p>
+      <p>ABC</p>
+    </div>
+
+    <script>
+      async function sendMessage() {
+        const userInput = document.getElementById("userInput");
+        const chatbox = document.getElementById("chatbox");
+        const message = userInput.value.trim();
+
+        if (!message) return;
+
+        // Display user message
+        chatbox.innerHTML += `<div class="message user">${message}</div>`;
+        userInput.value = "";
+        chatbox.scrollTop = chatbox.scrollHeight;
+
+        // Send message to Flask backend
+        const response = await fetch("http://127.0.0.1:5000/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: message }),
+        });
+        const data = await response.json();
+
+        // Display bot response
+        chatbox.innerHTML += `<div class="message bot">${data.reply}</div>`;
+        chatbox.scrollTop = chatbox.scrollHeight;
+      }
+
+      // Allow sending message with Enter key
+      document.getElementById("userInput").addEventListener("keypress", (e) => {
+        if (e.key === "Enter") sendMessage();
+      });
+    </script>
+  </body>
+</html>
